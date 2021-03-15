@@ -46,62 +46,66 @@ def get_channel_data(channel_id: int) -> list:
     return res
 
 
-def insert_channel():
+def insert_channel(title: str, username: str, link: str, about: str, img: str, author: str,
+                   organization: str, theme_id: int, tgstat_id: int, tg_id: int) -> int:
     """Добавляет канал в базу данных"""
     pass
 
 
-def insert_channel_data():
+def insert_channel_data(channel_id: int, parsing_date: int, subs: int, arg_post_reach: int, err: float,
+                        daily_reach: int, ci_index: float) -> int:
     """Добавляет показатели канала в базу данных"""
     pass
 
 
-def insert_posts():
+def insert_posts(posts_data: list) -> bool:
     """Добавляет посты в базу данных"""
     pass
 
 
-def insert_theme():
+def insert_theme(theme_name: str) -> int:
     """Добавляет тематику каналов в базу данных"""
     pass
 
 
-def update_channel():
+def update_channel(channel_id: int, title: str, username: str, link: str, about: str, img: str,
+                   author: str, organization: str, theme_id: int, tgstat_id: int, tg_id: int) -> bool:
     """Обновляет информацию о канале в базе данных"""
     pass
 
 
-def update_channel_data():
+def update_channel_data(channel_data_id: int, channel_id: int, parsing_date: int, subs: int,
+                        arg_post_reach: int, err: float, daily_reach: int, ci_index: float) -> int:
     """Обновляет показатели канала в конкретную дату в базе данных"""
     pass
 
 
-def update_post():
+def update_post(channel_id: int, date: int, views: int, link: str) -> bool:  # По ссылке на пост
     """Обновляет информацию о публикации в базе данных"""
     pass
 
 
-def update_theme():
+def update_theme(theme_id: int, theme_name: str):
     """Обновляет информацию о тематике в базе данных"""
     pass
 
 
-def delete_channel():
+def delete_channel(channel_id: int) -> bool:
     """Удаляет канал из базы данных"""
     pass
 
 
-def delete_channel_data():
+def delete_channel_data(channel_data_id: int) -> bool:
     """Удаляет показатели канала за конкретную дату"""
     pass
 
 
-def delete_post():
+def delete_post(post_id: int) -> bool:
     """Удаляет публикацию из базы данных"""
     pass
 
 
-def delete_theme():
+def delete_theme(theme_id) -> bool:
     """Удаляет тематику из базы данных"""
     pass
 
