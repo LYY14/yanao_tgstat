@@ -9,6 +9,8 @@
 #####################################################################################################################
 
 
+from typing import Union
+
 import psycopg2
 from psycopg2.extras import DictCursor
 from psycopg2.errors import NotNullViolation, UndefinedColumn, InvalidTextRepresentation, InFailedSqlTransaction
@@ -70,20 +72,19 @@ def get_channel_by_id(channel_id: int):
 def get_posts_list(channel_id: int) -> list:
     """Получает id канала ивозвращает список постов канала"""
     query = f"""SELECT 'date', views, link FROM posts WHERE channel_id = {channel_id}"""
-    empty_answer = {'date': None, 'views': None, 'link': None}
     try:                                    # Пытаемся выполнить запрос
         cursor.execute(query=query)
     except UndefinedColumn as e:            # Если передана строка или None
         print(e)
-        return empty_answer
+        return []
     except InFailedSqlTransaction as e:     # Если передана строка в кавычках
         print(e)
-        return empty_answer
+        return []
     res = cursor.fetchall()
     return res
 
 
-def get_channel_data(channel_id: int) -> list:
+def get_channel_data(channel_id: int) -> dict:
     """Возвращает информацию о канале"""
     query = f"""SELECT parsing_date, subs, arg_post_reach, err, daily_reach, ci_index
     FROM channel_data WHERE channel_id = {channel_id}"""
@@ -107,7 +108,7 @@ def get_channel_data(channel_id: int) -> list:
 
 
 def insert_channel(title: str, username: str, link: str, about: str, img: str, author: str,
-                   organization: str, theme_id: int, tgstat_id: int, tg_id: int) -> int:
+                   organization: str, theme_id: int, tgstat_id: int, tg_id: int) -> Union[int, None]:
     """Добавляет канал в базу данных"""
     d = prepare_data_to_db({'title': title, 'username': username, 'link': link, 'about': about, 'img': img,
                             'author': author, 'organization': organization, 'theme_id': theme_id,
@@ -129,17 +130,24 @@ def insert_channel(title: str, username: str, link: str, about: str, img: str, a
 def insert_channel_data(channel_id: int, parsing_date: int, subs: int, arg_post_reach: int, err: float,
                         daily_reach: int, ci_index: float) -> int:
     """Добавляет показатели канала в базу данных"""
-    pass
+    d = prepare_data_to_db({'channel_id': channel_id, 'parsing_date': parsing_date, 'subs': subs,
+                            'arg_post_reach': arg_post_reach, 'err': err, 'daily_reach': daily_reach,
+                            'ci_index': ci_index})
+    return d['channel_id']  # TODO: Реализовать вставку данных о канале в БД
 
 
 def insert_posts(posts_data: list) -> bool:
     """Добавляет посты в базу данных"""
-    pass
+    for post in posts_data:
+        print(post)
+    return True     # TODO: Реализовать вставку списка постов в БД
 
 
 def insert_theme(theme_name: str) -> int:
     """Добавляет тематику каналов в базу данных"""
-    pass
+    d = prepare_data_to_db({'theme_name': theme_name})
+    print(d['theme_name'])
+    return 1    # TODO: Реализовать вставку темы в базу данных
 
 
 def update_channel_by_tg_id(title: str, username: str, link: str, about: str, img: str, author: str, organization: str,
@@ -176,17 +184,24 @@ def update_channel_by_tg_id(title: str, username: str, link: str, about: str, im
 def update_channel_data(channel_data_id: int, channel_id: int, parsing_date: int, subs: int,
                         arg_post_reach: int, err: float, daily_reach: int, ci_index: float) -> int:
     """Обновляет показатели канала в конкретную дату в базе данных"""
-    pass
+    d = prepare_data_to_db({'channel_data_id': channel_data_id, 'channel_id': channel_id, 'parsing_date': parsing_date,
+                            'subs': subs, 'arg_post_reach': arg_post_reach, 'err': err, 'daily_reach': daily_reach,
+                            'ci_index': ci_index})
+    return d['channel_data_id']     # TODO: Реализовать обновление показателей канала
 
 
 def update_post(channel_id: int, date: int, views: int, link: str) -> bool:  # По ссылке на пост
     """Обновляет информацию о публикации в базе данных"""
-    pass
+    d = prepare_data_to_db({'channel_id': channel_id, 'date': date, 'views': views, 'link': link})
+    print(d)
+    return True     # TODO: Реализовать обновление постов
 
 
-def update_theme(theme_id: int, theme_name: str):
+def update_theme(theme_id: int, theme_name: str) -> bool:
     """Обновляет информацию о тематике в базе данных"""
-    pass
+    d = prepare_data_to_db({'theme_name': theme_name, 'theme_id': theme_id})
+    print(d)
+    return True     # TODO: Реализовать обновление темы
 
 
 def delete_channel_by_tg_id(tg_id: int) -> bool:
@@ -209,17 +224,20 @@ def delete_channel_by_tg_id(tg_id: int) -> bool:
 
 def delete_channel_data(channel_data_id: int) -> bool:
     """Удаляет показатели канала за конкретную дату"""
-    pass
+    print(channel_data_id)
+    return True     # TODO: Реализовать удаление показателей канала
 
 
 def delete_post(post_id: int) -> bool:
     """Удаляет публикацию из базы данных"""
-    pass
+    print(post_id)
+    return True     # TODO: Реализовать удаление поста
 
 
 def delete_theme(theme_id) -> bool:
     """Удаляет тематику из базы данных"""
-    pass
+    print(theme_id)
+    return True     # TODO: Реализовать удаление темы
 
 
 if __name__ == '__main__':
